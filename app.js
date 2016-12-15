@@ -118,7 +118,6 @@ app.post('/bus', function(req, res) {
 		});
 	});
 });
-
 app.post('/audio', function(req, res) {
 	console.log('enter audio');
 	sendAudioData(res);
@@ -149,54 +148,57 @@ fs.readFile(defaultfile, function(err, data) {
 	dfData = data;
 });
 
+function getFileTags(list, res) {
+	var audioInfo = new Array();
+	list.forEach(function(file) {
+		jsmediatags.read("./public/audio/" + file, {
+			onSuccess : function(tag) {
+				var audioFile = new Object();
+				try {
+					var buffer = Buffer.from(tag.tags.picture.data);
+					audioFile.data = buffer.toString('base64');
+					audioFile.lyrics = tag.tags.lyrics.lyrics;
+				} catch (err) {
+					audioFile.data = dfData.toString('base64');
+					audioFile.lyrics = "No lyric!";
+				} finally {	
+					audioFile.path = './public/audio/' + file;
+					audioFile.name = file;
+					console.log(file);
+					audioInfo.push(audioFile);
+				}
+			},
+			onError : function(error) {
+				console.log(':(', error.type, error.info);
+			}		
+		});	
+	});
+	setTimeout(function(){
+		sendAudioinfo(res, audioInfo);},2000);
+}
+function sendAudioinfo(res, audioInfo){
+	var jsonf = new Object();
+	jsonf.audio = audioInfo;
+	var audiojson = JSON.stringify(jsonf);
+	res.writeHead(200, {
+		'Content-Type' : 'text/html'
+	});
+	res.write(audiojson);
+	res.end();
+}
 function sendAudioData(res){
 	var path = './public/audio/';
+	var fileList = new Array();
 	// http://mudchobo.tistory.com/542
 	fs.readdir(path, function(err, files) {
 		if (err)
 			throw err;
-		var jsonf = new Object();
-		var arr = new Array();
-
 		files.forEach(function(file) {
-			var audioFile = new Object();
-			jsmediatags.read("./public/audio/" + file, {
-				onSuccess : function(tag) {
-					console.log(tag);
-					try {
-						var buffer = Buffer.from(tag.tags.picture.data);
-						audioFile.data = buffer.toString('base64');
-						audioFile.lyrics = tag.tags.lyrics.lyrics;
-						
-					} catch (err) {
-						audioFile.data = dfData.toString('base64');
-						audioFile.lyrics = "No lyric!";
-					} finally {
-						// console.log(audioFile.data);
-					}
-				},
-				onError : function(error) {
-					console.log(':(', error.type, error.info);
-				}
-			});
-
-			setTimeout(function() {
-				audioFile.path = './public/audio/' + file;
-				audioFile.name = file;
-				// console.log(file);
-				arr.push(audioFile);
-			}, 1000);
+			fileList.push(file);
 		});
-		setTimeout(function() {
-			jsonf.audio = arr;
-			var audiojson = JSON.stringify(jsonf);
-			res.writeHead(200, {
-				'Content-Type' : 'text/html'
-			});
-			res.write(audiojson);
-			res.end();
-		}, 1000);
-	});
+		console.log('sendAudioData');
+		getFileTags(fileList, res);		
+	});	
 }
 
 app.post('/process/audio', upload.single('audio'), function(req, res) {

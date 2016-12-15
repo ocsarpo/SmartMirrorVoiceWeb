@@ -51,9 +51,10 @@ function resultAudio(result) {
 	console.log('audio success');
 	var mydata = JSON.parse(result);
 	var f = true;
+	var number = 0;
 	$.each(mydata.audio, function(i, d) {
 		add_audio(d["path"], d["name"], 'data:image/jpeg;base64,' + d.data,
-				d["lyrics"], f);
+				d["lyrics"], f, ++number);
 		// console.log(d["path"], d["name"], d["lyrics"]);
 		if (f)
 			firstAudioPlay(d["path"]);
@@ -217,6 +218,14 @@ function mpPrev() {
 
 	run($(link), audio[0]);
 }
+function getTotalCount(){
+	return len;
+}
+function mpIndexPlay(tag){
+	current = (tag*1)-1;
+	link = playlist.find('a')[current];
+	run($(link), audio[0]);
+}
 
 function mpStop() {
 	audio[0].pause();
@@ -237,7 +246,7 @@ function mpStart() {
 	btnToPause();
 }
 
-function add_audio(path, name, imgData, lyrics, first) {
+function add_audio(path, name, imgData, lyrics, first, number) {
 	var span = document.createElement('span');
 	if (first) {
 		span.setAttribute('class', 'active');
@@ -245,7 +254,7 @@ function add_audio(path, name, imgData, lyrics, first) {
 	}
 	var a = document.createElement('a');
 	a.setAttribute('href', path);
-	a.setAttribute('id', 'num');
+	a.setAttribute('id', 'num'+number);
 	a.setAttribute('value', name);
 	a.innerHTML = name;
 	
@@ -259,7 +268,7 @@ function add_audio(path, name, imgData, lyrics, first) {
 	
 	var num = document.createElement('div');
 	num.setAttribute('style','float:right');
-	num.innerHTML = 1;
+	num.innerHTML = number+'번 곡';
 	a.appendChild(num);
 	
 

@@ -129,12 +129,23 @@ if (annyang) {
 				getAudio();
 			}
 		},
-		'*term 음악 삭제' : function(tag){
-			mpStop();
-			tag = tag.replace(/\s/gi, '');
-			deleteAudio(tag);
-		}
-		,
+		'*term(번)( 번) 음악 *tag' : function(term, tag) {
+			var len = getTotalCount();
+			var re = /^[0-9]+$/;
+			if (!re.test(term*1) || ((term * 1) > len)) {
+				responsiveVoice.speak("정확한 인덱스를 말씀해주세요", "Korean Female");
+			} else {
+				if (tag == "재생") {
+					term = term.replace(/\s/gi, '');
+					mpIndexPlay(term);
+				}
+				else if(tag == "삭제"){
+					 mpStop();
+					 term = term.replace(/\s/gi, '');
+					 deleteAudio(term);
+				}
+			}
+		},
 		'가사' : function(tag) {
 			showLyrics();
 		},

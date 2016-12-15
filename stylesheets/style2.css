@@ -127,8 +127,9 @@ body {
 }
 
 #playlist, audio {
-	width: 400px;
+	width: 470px;
 	padding: 0px;
+	margin-top : -10px;
 }
 
 .active a {
@@ -171,6 +172,7 @@ span a:hover {
 	margin-top: 20px;
 	float: left;
 	border-radius: 15px;
+	margin-left : 20px;
 }
 
 #playhead {
