@@ -62,7 +62,7 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 app.get('/', function(req, res) {
-	fs.readFile('index.html', function(error, data) {
+	fs.readFile('index3.html', function(error, data) {
 		res.writeHead(200, {
 			'Content-Type' : 'text/html'
 		});
