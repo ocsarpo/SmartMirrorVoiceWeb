@@ -5,6 +5,7 @@
 <title>SMirror</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="stylesheet" type="text/css" href="./stylesheets/style2.css">
+<link rel="stylesheet" type="text/css" href="./stylesheets/animate.css">
 <script src="./js/greeting.js"></script>
 <script src="http://code.jquery.com/jquery-latest.min.js"></script>
 <script src="./js/clock.js"></script>
@@ -20,6 +21,7 @@
 <script src="./js/youtube.js"></script>
 <script src="./js/bus.js"></script>
 <script src="./js/map.js"></script>
+<script src="./js/news.js"></script>
 
 </head>
 <body onload="startTime()">
@@ -36,7 +38,7 @@
 				</div>
 
 				<div id="divWeath">
-					<div style="float: left; margin-top: 20px; margin-left:120px">
+					<div style="float: left; margin-top: 20px; margin-right: 20px">
 						<img id="weathericon" width="100" height="100">
 					</div>
 					<div style="float: right">
@@ -49,8 +51,22 @@
 			</div>
 
 			<div id="jb-content">
-				<div id="gMap" style="display: none">
+				<div id="gMap" class="Notosan" style="display: none">
 					<div id="map"></div>
+					<br /> <font color="white">
+						<p style="font-size: 9pt">
+							* <span style="color: #6799FF; margin-right: 3px">간선</span> <span
+								style="color: #86E57F; margin-right: 3px">지선</span> <span
+								style="color: #FAED7D; margin-right: 3px">마을</span> <span
+								style="color: #FFC19E; margin-right: 3px">경기</span> <span
+								style="color: #F15F5F; margin-right: 3px">광역</span> <span
+								style="color: #A566FF; margin-right: 3px">인천</span> <span
+								style="color: #BDBDBD; margin-right: 3px">순환</span> <span
+								style="color:; margin-right: 3px">공항</span> *
+						</p> [ 현재 정류장 / 버스번호 / 도착 예정시간 / 다음 정류장 ]
+						<hr width=70% color=white>
+					</font>
+					<div id="stoplist"></div>
 				</div>
 				<div id="greeting" class="dneon"
 					style="display: none; padding: 400px 0px 0px 0px;"></div>
@@ -78,9 +94,6 @@
 						<class="light-grey">사라져</class>
 						<br>
 						<class="light-grey">돌아와</class>
-						<br>
-						<class="light-grey">욕설 (eg : 미친놈아)</class>
-						<br>
 					</P>
 
 					<P class="title">03. 홈으로</P>
@@ -102,10 +115,10 @@
 						<br>
 					</P>
 					<P class="title">05. "_______" 정류장</P>
-					<class="light-grey">※ _______ 정류장이 지도에 나타나며, 다음 명령이
-					사용 가능해집니다. ※</class>
+					<class="light-grey">※ _______ 정류장이 지도에 나타나며, 다음 명령이 사용
+					가능해집니다. ※</class>
 					<P class="qsub">
-						<class="light-grey">_______ 정보 (숫자하나씩 말씀하세요.)</class>
+						<class="light-grey">_______ 도착 정보 (숫자하나씩 말씀하세요.)</class>
 						<br>
 						<class="light-grey">지도 사이즈 숫자 (eg:18)</class>
 						<br>
@@ -137,11 +150,12 @@
 						<br>
 					</P>
 				</div>
-				<div id="stoplist"></div>
-
 			</div>
 
 			<div id="jb-footer">
+				<div id="news">
+					<div id="ntitle"></div>
+				</div>
 				<div id="vresult">
 					<div id="guide" class="resultNeon">User :</div>
 					<br>
@@ -187,8 +201,8 @@
 </body>
 
 <script async defer
-   src="https://maps.googleapis.com/maps/api/js?key=A&callback=initMap">
-   
+	src="https://maps.googleapis.com/maps/api/js?key=&callback=initMap">
+	
 </script>
 <script>
 	$(document).ready(function() {
@@ -200,4 +214,5 @@
 		mpInit();
 	});
 </script>
+
 </html>

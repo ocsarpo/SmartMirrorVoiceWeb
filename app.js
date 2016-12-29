@@ -13,9 +13,7 @@ var parser = new xml2js.Parser();
 // http://uiandwe.tistory.com/1002
 var urlencode = require('urlencode');
 var multer = require('multer');
-var key = require('./js/config.js');
-
-console.log(key.getBusKey());
+var BUS_API_KEY = '';
 // exec('start chrome 127.0.0.1:3000 -kiosk', function(error, stdout, stderr){
 // console.log(stdout);
 // });
@@ -62,7 +60,7 @@ app.use(bodyParser.urlencoded({
 app.use(bodyParser.json());
 
 app.get('/', function(req, res) {
-	fs.readFile('index3.html', function(error, data) {
+	fs.readFile('index.html', function(error, data) {
 		res.writeHead(200, {
 			'Content-Type' : 'text/html'
 		});
@@ -75,14 +73,14 @@ app.post('/station', function(req, res) {
 	var element = JSON.parse(data);
 	var searchName = urlencode(element.stNm);
 	
-	var url = 'http://ws.bus.go.kr/api/rest/stationinfo/getStationByName?serviceKey='+key.getBusKey()+'&stSrch='+searchName+'&numOfRows=999&pageSize=999&pageNo=1&startPage=1';
+	var url = 'http://ws.bus.go.kr/api/rest/stationinfo/getStationByName?serviceKey='+BUS_API_KEY+'&stSrch='+searchName+'&numOfRows=999&pageSize=999&pageNo=1&startPage=1';
 	
 	request({
 		url : url,
 		method : 'GET'
 	}, function(error, response, body) {
 		parser.parseString(body, function(err, result) {
-			console.dir(JSON.stringify(result));
+		//	console.dir(JSON.stringify(result));
 
 			res.writeHead(200, {
 				'Content-Type' : 'text/html'
@@ -99,7 +97,7 @@ app.post('/bus', function(req, res) {
 	var element = JSON.parse(data);
 	var searchName = urlencode(element.arsId);
 	
-	var url = 'http://ws.bus.go.kr/api/rest/stationinfo/getStationByUid?serviceKey='+key.getBusKey()+'&arsId='+searchName+'&numOfRows=999&pageSize=999&pageNo=1&startPage=1';
+	var url = 'http://ws.bus.go.kr/api/rest/stationinfo/getStationByUid?serviceKey='+BUS_API_KEY+'&arsId='+searchName+'&numOfRows=999&pageSize=999&pageNo=1&startPage=1';
 	
 	console.log(searchName);
 
@@ -109,7 +107,7 @@ app.post('/bus', function(req, res) {
 
 	}, function(error, response, body) {
 		parser.parseString(body, function(err, result) {
-			console.dir(JSON.stringify(result));
+		//	console.dir(JSON.stringify(result));
 			res.writeHead(200, {
 				'Content-Type' : 'text/html'
 			});
@@ -118,6 +116,27 @@ app.post('/bus', function(req, res) {
 		});
 	});
 });
+
+app.post('/news', function(req, res) {
+	console.log('enter news');
+	var url = 'http://fs.jtbc.joins.com//RSS/newsflash.xml';
+
+	request({
+		url : url,
+		method : 'GET',
+
+	}, function(error, response, body) {
+		parser.parseString(body, function(err, result) {
+		//	console.dir(JSON.stringify(result));
+			res.writeHead(200, {
+				'Content-Type' : 'text/html'
+			});
+			res.write(JSON.stringify(result));
+			res.end();
+		});
+	});
+});
+
 app.post('/audio', function(req, res) {
 	console.log('enter audio');
 	sendAudioData(res);
